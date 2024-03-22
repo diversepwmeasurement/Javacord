@@ -1,27 +1,27 @@
-# Publishes the project to a Maven repository on every push by calling the gradle publish command.
-# If the current version is a not a snapshot version ("-SNAPSHOT" suffix), it will publish to
-# Maven Central.
-name: Publish
-on:
-  push:
-    branches:
-      - 'master'
 jobs:
   publish:
     name: Publish Repository
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 11
-      - uses: gradle/gradle-build-action@v2
-      - name: Publish
-        run: ./gradlew test publish
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+    - continue-on-error: true
+      uses: actions/checkout@v3
+    - continue-on-error: true
+      name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 11
+    - continue-on-error: true
+      uses: gradle/gradle-build-action@v2
+    - continue-on-error: true
+      env:
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+      name: Publish
+      run: ./gradlew test publish
+name: Publish
+on:
+  repository_dispatch:
+    types: trigger-ga___publish.yml

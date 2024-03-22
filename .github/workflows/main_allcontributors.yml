@@ -1,16 +1,11 @@
-name: Main
-on:
-  pull_request:
-    paths:
-      - 'CONTRIBUTORS.md'
-      - '.all-contributorsrc'
-  push:
-    branches:
-      - 'all-contributors/**'
-
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
     name: Build and test
+    runs-on: self-hosted
     steps:
-      - run: 'echo "No build required" '
+    - continue-on-error: true
+      run: 'echo "No build required" '
+name: Main
+on:
+  repository_dispatch:
+    types: trigger-ga___main_allcontributors.yml
